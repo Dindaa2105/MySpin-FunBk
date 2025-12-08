@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin Kerja Burger King</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Righteous&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5deb3 0%, #faebd7 25%, #ffe4b5 50%, #f5deb3 75%, #faebd7 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 218, 185, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(245, 222, 179, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 228, 181, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            animation: floatPattern 20s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes floatPattern {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-family: 'Righteous', cursive;
+            color: #8B4513;
+            margin-bottom: 10px;
+            font-size: 2.8em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            animation: titleBounce 2s ease-in-out infinite;
+            letter-spacing: 2px;
+        }
+
+        @keyframes titleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .subtitle {
+            font-family: 'Poppins', sans-serif;
+            color: #A0522D;
+            margin-bottom: 40px;
+            font-size: 1.3em;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 30px;
+        }
+
+        .arrow {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 45px solid #FF4444;
+            z-index: 10;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+            animation: arrowPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3), inset 0 0 30px rgba(255,255,255,0.2);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        .wheel canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .spin-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #FF6B35, #D2691E);
+            color: white;
+            border: 6px solid #fff;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 5;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 2px 10px rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .spin-button:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 2px 10px rgba(255,255,255,0.3);
+            background: linear-gradient(145deg, #FF7B45, #E2794E);
+        }
+
+        .spin-button:active {
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        .spin-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 248, 240, 0.95));
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-title {
+            font-family: 'Righteous', cursive;
+            font-size: 2em;
+            color: #8B4513;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 1px;
+        }
+
+        .result-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2em;
+            color: #A0522D;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .footer {
+            font-family: 'Poppins', sans-serif;
+            color: #8B4513;
+            font-size: 0.95em;
+            margin-top: 20px;
+            line-height: 1.8;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+            padding-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            .spin-button {
+                width: 90px;
+                height: 90px;
+                font-size: 18px;
+            }
+
+            .arrow {
+                border-left: 20px solid transparent;
+                border-right: 20px solid transparent;
+                border-top: 35px solid #FF4444;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍔Spin Kerja Burger King</h1>
+        <p class="subtitle">Untuk Seluruh Karyawan Burger King</p>
+
+        <div class="wheel-container">
+            <div class="arrow" id="arrow"></div>
+            <div class="wheel-wrapper">
+                <div class="wheel" id="wheel">
+                    <canvas id="wheelCanvas"></canvas>
+                </div>
+                <button class="spin-button" id="spinBtn">SPIN</button>
+            </div>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <p class="result-text">Klik tombol SPIN untuk memulai!</p>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 Spin Fun. Dinda Permatasari</p>
+            <p>Teknik Informatika</p>
+        </div>
+    </div>
+
+    <script>
+        const wheel = document.getElementById('wheel');
+        const arrow = document.getElementById('arrow');
+        const spinBtn = document.getElementById('spinBtn');
+        const resultBox = document.getElementById('resultBox');
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const options = [
+            {
+                name: "Masuk Kerja",
+                message: "Semangat ya! Jangan lupa berdoa disetiap langkah",
+                color: "#FF6B9D"
+            },
+            {
+                name: "Gausah Masuk",
+                message: "Enakan rebahan ya? wkwk lanjut Bobo kali ya",
+                color: "#4ECDC4"
+            },
+            {
+                name: "Ngopi Aja",
+                message: "Santai dulu supaya ga tegang ngadepin dunia",
+                color: "#FFD93D"
+            },
+            {
+                name: "Jual Ayam Whole Harga Mati!",
+                message: "Ayo semangat jual ayam whole supaya menang kompetisinya",
+                color: "#95E1D3"
+            }
+        ];
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function drawWheel() {
+            const size = wheel.offsetWidth;
+            canvas.width = size;
+            canvas.height = size;
+            
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = size / 2;
+            const sliceAngle = (2 * Math.PI) / options.length;
+
+            options.forEach((option, index) => {
+                const startAngle = index * sliceAngle - Math.PI / 2;
+                const endAngle = startAngle + sliceAngle;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = option.color;
+                ctx.fill();
+                ctx.strokeStyle = '#8B4513';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 17px Arial';
+                ctx.shadowColor = 'rgba(0,0,0,0.7)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                
+                const words = option.name.split(' ');
+                const lineHeight = 22;
+                const startY = radius * 0.65;
+                
+                if (words.length <= 2) {
+                    ctx.fillText(option.name, startY, 0);
+                } else {
+                    words.forEach((word, i) => {
+                        ctx.fillText(word, startY, (i - words.length / 2 + 0.5) * lineHeight);
+                    });
+                }
+                
+                ctx.restore();
+            });
+        }
+
+        drawWheel();
+        window.addEventListener('resize', drawWheel);
+
+        spinBtn.addEventListener('click', () => {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinBtn.disabled = true;
+            arrow.style.animation = 'none';
+            
+            resultBox.innerHTML = '<p class="result-text">🎰 Spinning... 🎰</p>';
+            
+            const randomSpin = Math.floor(Math.random() * 5 + 8) * 360;
+            const randomDegree = Math.floor(Math.random() * 360);
+            const totalRotation = currentRotation + randomSpin + randomDegree;
+            
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            currentRotation = totalRotation;
+            
+            const normalizedRotation = (360 - (totalRotation % 360)) % 360;
+            const selectedIndex = Math.floor(normalizedRotation / 90) % options.length;
+            
+            setTimeout(() => {
+                const selected = options[selectedIndex];
+                resultBox.innerHTML = `
+                    <p class="result-title">🎉${selected.name}</p>
+                    <p class="result-text">${selected.message}</p>
+                `;
+                isSpinning = false;
+                spinBtn.disabled = false;
+                arrow.style.animation = 'arrowPulse 1s ease-in-out infinite';
+            }, 4000);
+        });
+    </script>
+</body>
+</html>
